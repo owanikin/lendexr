@@ -1,6 +1,6 @@
 const Coin = artifacts.require("StableCoinToken")
 const MockOracle = artifacts.require("MockOracle")
-const chainlinkOracle = artifacts.require("PriceConsumerV3");
+const ChainlinkOracle = artifacts.require("PriceConsumerV3");
 const Vault = artifacts.require("Vault")
 
 module.exports = async function (deployer) {

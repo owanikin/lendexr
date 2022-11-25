@@ -1,5 +1,5 @@
 const Vault = artifacts.require("Vault");
-const mockOracle = artifacts.require(MockOracle);
+const mockOracle = artifacts.require("MockOracle");
 const chainlinkOracle = artifacts.require("PriceConsumerV3");
 const Token = artifacts.require("StableCoinToken");
 const { expectEvent, expectRevert } = require("@openzeppelin/test-helpers");
@@ -8,7 +8,7 @@ const { printEvents, toWei } = require("./utils");
 const toBN = web3.utils.toBN;
 const test_network = process.env.TEST_NETWORK;
 
-contract("Vault", (account) => {
+contract("Vault", (accounts) => {
   let token,
     receipt,
     oracle,
@@ -56,7 +56,7 @@ contract("Vault", (account) => {
     it("should update user token balance", async () => {
       let ethPrice = await vault.getEthUSDPrice();
       let expectedTokenBalance = toBN(toWei('1')).mul(ethPrice);
-      assert.equal(updatedTokenBalance.toString(), expectedTokenBalance.toString(), "user Token balance not updated with right amount")
+      assert.equal(updatedTokenBalance.toString(), expectedTokenBalance.toString(), "user Token balance not updated with right the amount")
     })
 
     it("should update user Vault debt", async () => {
@@ -64,39 +64,39 @@ contract("Vault", (account) => {
       assert.equal(updatedTokenBalance.toString(), userVault.debtAmount.toString(), "user Vault debt not updated with right amount")
     })
 
-    it("should provide an estimated token amount with accuracy > 90%", async () => {
-      let estimatedTokenAmount = await vault.estimatedTokenAmount(toWei('1'))
-      let tokensMinted = receipt.logs[0].args.amountMinted
-      let diff = toBN(estimatedTokenAmount).div(tokensMinted)
-      assert(Math.abs(1 - parseInt(diff.toString())) <= 0.1)
+    it("should provide a estimated token amount with accuracy > 90%", async () =>{
+      let estimatedTokenAmount = await vault.estimateTokenAmount(toWei('1'));
+      let tokensMinted = receipt.logs[0].args.amountMinted;
+      let diff = toBN(estimatedTokenAmount).div(tokensMinted);
+      assert(Math.abs(1 - parseInt(diff.toString()))<=0.1);
     })
-  });
+  })
 
-  describe("Use Case 2: user repays ALL tokens and withdraws ether", async () => {
+  describe ("Use Case 2: user repays ALL tokens and withdraws ether ", async ()=>{
     before(async () => {
-      receipt = await vault.withdraw(updatedTokenBalance.toString(), {from: user})
-      finalEthBalance = await web3.eth.getBalance(user)
-      finalTokenBalance = await token.balanceOf(user)
+      receipt = await vault.withdraw(updatedTokenBalance.toString(),{from: user});
+      finalEthBalance = await web3.eth.getBalance(user);
+      finalTokenBalance = await token.balanceOf(user);
     })
 
-    it("should fire a 'Withdraw' event", async => {
+    it("should fire a 'Withdraw' event", async ()=>{
       expectEvent(receipt, "Withdraw");
     })
 
-    it("user token balance should be zero", async () => {
+    it ("user token balance should be zero", async ()=>{
       assert.equal(finalTokenBalance.toString(), "0", "user Token balance should be zero after repayment")
     })
 
-    it("user vault debt should be zero", async () => {
+    it ("user vault debt should be zero", async ()=>{
       let userVault = await vault.getVault(user);
       assert.equal("0", userVault.debtAmount.toString(), "user Vault debt is not zero after repayment")
     })
 
-    it("should provide an estimated repayment amount with accuracy > 90%", async () => {
-      let estimatedCollateralAmount = await vault.estimatedCollateralAmount(updatedTokenBalance.toString());
-      let collateralWithdrawn = receipt.logs[0].args.collateralWithdrawn
-      let diff = toBN(estimatedCollateralAmount).div(collateralWithdrawn)
-      assert(Math.abs(1 - parseInt(diff.toString())) <= 0.1);
+    it("should provide a estimated repayment amount with accuracy > 90%", async () =>{
+      let estimatedCollateralAmount = await vault.estimateCollateralAmount(updatedTokenBalance.toString());
+      let collateralWithdrawn = receipt.logs[0].args.collateralWithdrawn;
+      let diff = toBN(estimatedCollateralAmount).div(collateralWithdrawn);
+      assert(Math.abs(1 - parseInt(diff.toString()))<=0.1);
     })
   })
 });
