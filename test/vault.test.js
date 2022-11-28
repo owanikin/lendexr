@@ -55,7 +55,7 @@ contract("Vault", (accounts) => {
 
     it("should update user token balance", async () => {
       let ethPrice = await vault.getEthUSDPrice();
-      let expectedTokenBalance = toBN(toWei('1')).mul(ethPrice);
+      let expectedTokenBalance = toBN(toWei('0.5')).mul(ethPrice);
       assert.equal(updatedTokenBalance.toString(), expectedTokenBalance.toString(), "user Token balance not updated with right the amount")
     })
 

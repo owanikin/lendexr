@@ -13,6 +13,8 @@ contract Vault is IVault, Ownable {
     mapping (address => Vault) vaults;
     StableCoinToken public token;
     PriceConsumerV3 private oracle;
+    uint256 public collaterization_ratio = 5e17;
+    // collaterization 50%
     // using SafeMath for uint256;
 
     constructor(StableCoinToken _token, PriceConsumerV3 _oracle){
@@ -26,7 +28,7 @@ contract Vault is IVault, Ownable {
      */
     function deposit(uint256 amountToDeposit) override payable external {
         require(amountToDeposit == msg.value, "incorrect ETH amount");
-        uint256 amountToMint = amountToDeposit * getEthUSDPrice();
+        uint256 amountToMint = amountToDeposit * getEthUSDPrice() * collaterization_ratio;
         token.mint(msg.sender, amountToMint);
         vaults[msg.sender].collateralAmount += amountToDeposit;
         vaults[msg.sender].debtAmount += amountToMint;
@@ -74,7 +76,7 @@ contract Vault is IVault, Ownable {
     @return tokenAmount  the estimated amount of stablecoin that would be minted
      */
     function estimateTokenAmount(uint256 depositAmount) external view override returns(uint256 tokenAmount) {
-        return depositAmount * getEthUSDPrice();
+        return depositAmount * getEthUSDPrice() * collaterization_ratio;
     }
 
     function getEthUSDPrice() public view returns (uint256){
