@@ -38,19 +38,18 @@ contract Vault is IVault, Ownable {
     /**
     @notice Allows a user to withdraw up to 100% of the collateral they have on deposit
     @dev This cannot allow a user to withdraw more than they put in
-    @param repaymentAmount  the amount of stablecoin that a user is repaying to redeem their collateral for.
+    @param repaymentAmount  the amount of stablecoin that a user (or yearn APY) is repaying to redeem their collateral for.
      */
     function withdraw(uint256 repaymentAmount) override external {
         require(repaymentAmount <= vaults[msg.sender].debtAmount, "withdraw limit exceeded"); 
         require(token.balanceOf(msg.sender) >= repaymentAmount, "not enough tokens in balance");
-        uint256 amountToWithdraw = repaymentAmount / getEthUSDPrice();
+        uint256 amountToWithdraw = repaymentAmount / getEthUSDPrice() / collaterization_ratio;
         token.burn(msg.sender, repaymentAmount);
         vaults[msg.sender].collateralAmount -= amountToWithdraw;
         vaults[msg.sender].debtAmount -= repaymentAmount;
         payable(msg.sender).transfer(amountToWithdraw);
         emit Withdraw(amountToWithdraw, repaymentAmount);
     }
-
     
     /**
     @notice Returns the details of a vault
@@ -67,7 +66,7 @@ contract Vault is IVault, Ownable {
     @return collateralAmount the estimated amount of a vault's collateral that would be returned 
      */
     function estimateCollateralAmount(uint256 repaymentAmount) external view override  returns(uint256 collateralAmount) {
-        return repaymentAmount / getEthUSDPrice();
+        return repaymentAmount / getEthUSDPrice() / collaterization_ratio;
     }
     
     /**

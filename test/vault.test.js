@@ -72,7 +72,7 @@ contract("Vault", (accounts) => {
     })
   })
 
-  describe ("Use Case 2: user repays ALL tokens and withdraws ether ", async ()=>{
+  describe ("Use Case 2: user repays ALL tokens and withdraws ether", async ()=>{
     before(async () => {
       receipt = await vault.withdraw(updatedTokenBalance.toString(),{from: user});
       finalEthBalance = await web3.eth.getBalance(user);
@@ -92,7 +92,7 @@ contract("Vault", (accounts) => {
       assert.equal("0", userVault.debtAmount.toString(), "user Vault debt is not zero after repayment")
     })
 
-    it("should provide a estimated repayment amount with accuracy > 90%", async () =>{
+    it("should provide an estimated repayment amount with accuracy > 90%", async () =>{
       let estimatedCollateralAmount = await vault.estimateCollateralAmount(updatedTokenBalance.toString());
       let collateralWithdrawn = receipt.logs[0].args.collateralWithdrawn;
       let diff = toBN(estimatedCollateralAmount).div(collateralWithdrawn);
