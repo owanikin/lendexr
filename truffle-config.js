@@ -22,6 +22,9 @@
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
+require('dotenv').config()
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+const { INFURA_APIKEY, MNEMONIC } = process.env;
 
 module.exports = {
   /**
@@ -33,7 +36,7 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
-
+  
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
@@ -46,6 +49,29 @@ module.exports = {
      port: 7545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
     },
+    // goerli: {
+    //   // provider: () => new HDWalletProvider({ mnemonic : process.env.MNEMONIC, providerOrUrl : `https://goerli.infura.io/v3/${process.env.INFURA_APIKEY}`, addressIndex : 0 ,  numberOfAddresses : 10}),
+    //   provider: () => new HDWalletProvider(MNEMONIC, INFURA_APIKEY),
+    //   network_id: 5,
+    //   gas: 8000000,
+    //   networkCheckTimeout: 10000,
+    //   timeoutBlocks: 200,
+
+    // PriceConsumerV3 : 0x7DD22D58a900fb80eAF562E202bbf478423B5aE3
+    // MockOracle : 0x3c8a6DD634Ac9343188aaB6944A887179A4Ecd7c
+    // StableCoinToken : 0x8A7B483A2842501dCAeA0BabeE24Ea117B72D911
+    // Vault : 0x6CfA8203fa8c02F979e1608eC2A2410C1e15017A
+
+    // },
+    matic: {
+      provider: () => new HDWalletProvider(MNEMONIC, INFURA_APIKEY),
+      network_id: 80001,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      networkCheckTimeout: 100000,
+    },
+
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
@@ -81,7 +107,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.8.10",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "^0.8.0",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {

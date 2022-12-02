@@ -23,7 +23,7 @@ contract("Vault", (accounts) => {
     finalTokenBalance;
 
   before(async () => {
-    if (test_network == "goerli") {
+    if (test_network == "matic") {
       oracle = await chainlinkOracle.new({ from: owner });
     } else {
       oracle = await mockOracle;
