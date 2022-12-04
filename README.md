@@ -29,11 +29,11 @@ StableCoinToken.sol : https://mumbai.polygonscan.com/address/0x8A7B483A2842501dC
 Vault.sol : https://mumbai.polygonscan.com/address/0x6CfA8203fa8c02F979e1608eC2A2410C1e15017A
 
 ## 5. TODO
-Robust collateralization
-Implement liquidation
-Implement Yearn (or other yield farming protocol)
-Use safemath
-Improve test suite coverage
-Gas optimization
-Build Front-end
-Improve README.md
+- Robust collateralization
+- Implement liquidation
+- Implement Yearn (or other yield farming protocol)
+- Use safemath
+- Improve test suite coverage
+- Gas optimization
+- Build Front-end
+- Improve README.md
